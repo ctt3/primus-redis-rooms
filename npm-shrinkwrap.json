@@ -18,14 +18,14 @@
       "resolved": "https://registry.npmjs.org/redis-sentinel/-/redis-sentinel-0.3.3.tgz",
       "dependencies": {
         "redis": {
-          "version": "0.10.3",
-          "from": "redis@0.10.3",
-          "resolved": "https://registry.npmjs.org/redis/-/redis-0.10.3.tgz"
+          "version": "0.12.1",
+          "from": "redis@0.12.1",
+          "resolved": "https://registry.npmjs.org/redis/-/redis-0.12.1.tgz"
         },
         "q": {
-          "version": "0.9.2",
-          "from": "q@0.9.2",
-          "resolved": "https://registry.npmjs.org/q/-/q-0.9.2.tgz"
+          "version": "0.9.7",
+          "from": "q@0.9.7",
+          "resolved": "https://registry.npmjs.org/q/-/q-0.9.7.tgz"
         }
       }
     }
