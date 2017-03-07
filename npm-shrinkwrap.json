@@ -23,9 +23,9 @@
           "resolved": "https://registry.npmjs.org/redis/-/redis-0.12.1.tgz"
         },
         "q": {
-          "version": "0.9.7",
-          "from": "q@0.9.7",
-          "resolved": "https://registry.npmjs.org/q/-/q-0.9.7.tgz"
+          "version": "1.4.1",
+          "from": "q@1.4.1",
+          "resolved": "https://registry.npmjs.org/q/-/q-1.4.1.tgz"
         }
       }
     }
