@@ -1,5 +1,5 @@
 {
-	"name": "primus-redis-rooms-withauth",
+	"name": "primus-redis-rooms-custom-connections",
 	"version": "0.3.3",
 	"description": "Redis-based room system for Primus with Authentication - Forked from Primus-redis-rooms",
 	"dependencies": {
