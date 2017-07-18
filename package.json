@@ -9,7 +9,8 @@
 		"assert-called": "0.1.2-1",
 		"primus": "5.1.0",
 		"ws": "1.1.0",
-		"redis": "2.5.3"
+		"redis": "2.5.3",
+		"redis-sentinel": "^0.3.3"
 	},
 	"repository": {
 		"type": "git",
