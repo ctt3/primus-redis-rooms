@@ -27,10 +27,10 @@ function getClient(primus) {
 	return client;
 }
 
-let userData = { 'user': 1 };
-
 primus0 = getPrimus(PORT+1);
 primus1 = getPrimus(PORT+2);
+
+let remoteSparkId;
 
 function sleep(ms = 0) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -39,34 +39,42 @@ function sleep(ms = 0) {
 let runTest = async function() {
 	try {
 		client0 = getClient(primus0); // Create a connection to first primus server
-		await sleep(100);
-		assert.equal(Object.keys(primus1.getSparkData()).length, 1); // Assert connection record in second server
-
-		primus1.setSparkData(client0.sparkId, userData); // Set connection data in the allSpark of second server & Publish the connection data to first server allSpark
-		await sleep(100);
-		assert.deepEqual(primus0.getSparkData(client0.sparkId), userData); // Assert connection data is the same in the first server allSpark
+		await sleep(150);
+		primus0.setDataOnSpark(client0.sparkId, 'userId', client0.sparkId);
+		remoteSparkId = await primus1.getSparkId('userId', client0.sparkId); // Try to get spark Id of spark on another server
+		assert.equal(remoteSparkId, client0.sparkId); // Assert that spark Id returned is client1's spark id
 
 		client1 = getClient(primus1); // Create a connection to the second server
-		await sleep(100);
-		assert.equal(Object.keys(primus0.getSparkData()).length, 2); // Assert that the first server now has two connection records
+		await sleep(150);
+		primus1.setDataOnSpark(client1.sparkId, 'userId', client1.sparkId);
+		remoteSparkId = await primus0.getSparkId('userId', client1.sparkId); // Try to get spark Id of spark on another server
+		assert.equal(remoteSparkId, client1.sparkId); // Assert that spark Id returned is client1's spark id
 
-		primus0.allSparkEmit(client1.sparkId, 'emitted', true); // Emit to a spark from a server that spark is not connected to.
-		await sleep(100);
+		remoteSparkId = await primus1.getSparkId('userId', "asdfg"); // Try to get spark Id of spark on another server, with nonsense key-value
+		assert.equal(remoteSparkId, undefined); // Assert that spark Id returned is undefined, because the spark does not exist
+
+		primus0.remoteEmit('userId', client1.sparkId, 'emitted', true); // Emit to a spark from a server that spark is not connected to.
+		await sleep(150);
 		assert.equal(client1.emitted, true); // Assert that the connected client got the message sent from the other server.
 
+		primus1.remoteEmit('userId', client0.sparkId, 'emitted', true); // Emit to a spark from a server that spark is not connected to.
+		await sleep(150);
+		assert.equal(client0.emitted, true); // Assert that the connected client got the message sent from the other server.
+
 		client0.end(); // Kill the connection to the first server
-		await sleep(100);
-		assert.equal(Object.keys(primus1.getSparkData()).length, 1); // Assert the second server now has one connection record
+		await sleep(150);
+		remoteSparkId = await primus1.getSparkId('userId', client0.sparkId); // Try to get spark Id of spark on another server, after that spark has disconnected
+		assert.equal(remoteSparkId, undefined); // Assert that spark Id returned is undefined, because the spark is offline
 
 		client1.end(); // Kill the connection to the second server
-		await sleep(100);
-		assert.equal(Object.keys(primus0.getSparkData()).length, 0); // Assert that first server now has 0 connection records
+		await sleep(150);
+		remoteSparkId = await primus0.getSparkId('userId', client1.sparkId); // Try to get spark Id of spark on another server, after that spark has disconnected
+		assert.equal(remoteSparkId, undefined); // Assert that spark Id returned is undefined, because the spark is offline
 	}
 	catch (err) {
 		console.log(err);
 		process.exit(); // Complete - Test Failed.
 	}
-
 
 	process.exit(); // Complete - Test Passed.
 }
