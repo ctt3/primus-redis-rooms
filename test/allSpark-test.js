@@ -61,6 +61,8 @@ let runTest = async function() {
 		await sleep(150);
 		assert.equal(client0.emitted, true); // Assert that the connected client got the message sent from the other server.
 
+		primus0.remoteJoin('userId', client1.sparkId, 'newRoom'); // Just making sure this doesn't explode...
+
 		client0.end(); // Kill the connection to the first server
 		await sleep(150);
 		remoteSparkId = await primus1.getSparkId('userId', client0.sparkId); // Try to get spark Id of spark on another server, after that spark has disconnected
